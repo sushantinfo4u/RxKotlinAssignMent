@@ -1,10 +1,33 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+
+    <style name="txt6_SideHeadingStyle" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">12sp</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:layout_gravity">top</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:fontFamily" tools:ignore="NewApi">serif</item>
+    </style>
+
+    <style name="txt7_enquiryFormTextView" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:layout_gravity">top</item>
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:fontFamily" tools:ignore="NewApi">serif</item>
+    </style>
+
+    <style name="view1_enquiryFormView" parent="@style/Widget.AppCompat.TextView">
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:background">@color/colorGreyMid</item>
     </style>
 
 </resources>

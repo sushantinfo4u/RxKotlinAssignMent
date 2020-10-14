@@ -8,7 +8,8 @@ import javax.inject.Inject
 
 class GetMovieListUseCase @Inject constructor(private val movieRepository: MovieRepository
                                               , subscribeScheduler: Scheduler,
-                                              postExecutionScheduler: Scheduler):MovieUseCase<List<MovieData>,Unit>(subscribeScheduler,postExecutionScheduler){
+                                              postExecutionScheduler: Scheduler)
+    :MovieUseCase<List<MovieData>,Unit>(subscribeScheduler,postExecutionScheduler){
 
     override fun buildUseCaseSingle(params: Unit?): Single<List<MovieData>> {
        return movieRepository.getMovieData()
