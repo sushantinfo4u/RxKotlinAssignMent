@@ -23,7 +23,6 @@ interface ApiService {
         fun getMovieData(): Single<ParentObject>
 
 
-
     companion object {
         operator fun invoke(): ApiService {
             val URL = "https://movies-sample.herokuapp.com/api/"

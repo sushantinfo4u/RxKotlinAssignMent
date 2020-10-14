@@ -56,7 +56,6 @@ class HomeFragment : Fragment(), MovieAdapter.OnItemClickListener {
         val factory = HomeViewModelFactory(movieRepository)
         viewModel = ViewModelProvider(this, factory).get(HomeViewModel::class.java)
 
-
         recyclerView = rootView.findViewById(R.id.homeFragment_recyclerMovieList)
         val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
@@ -65,11 +64,12 @@ class HomeFragment : Fragment(), MovieAdapter.OnItemClickListener {
 
 
 
-        val list1 = viewModel.getData()
-        Log.e("SIZE","--"+list1.size)
-        adapter = MovieAdapter(context, movieList)
+//        val list1 = viewModel.getData()
+//        Log.e("SIZE","--"+list1.size)
+
+       /* adapter = MovieAdapter(context, movieList)
         MovieAdapter.onItemClickListener = this
-        recyclerView.adapter = adapter
+        recyclerView.adapter = adapter*/
 
 //        val data = viewModel.getData()
 //            .subscribeOn(io())

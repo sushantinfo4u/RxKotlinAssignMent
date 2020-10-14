@@ -12,31 +12,38 @@ import com.siliconstack.rxkotlinassignment.domain.usecase.MovieUseCase
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.schedulers.Schedulers.io
 import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(private val movieRepository: MovieRepository) : ViewModel() {
 
+    var listOfMovie = MutableLiveData<List<MovieData>>()
+    private val compositeDisposable=CompositeDisposable()
 
+    init {
+        getData()
+    }
 
-    fun getData() : ArrayList<MovieData>{
-
+    fun getData(){
         val list = ArrayList<MovieData>()
-
-        movieRepository.getMovieData()
-            .observeOn(io())
-            .subscribeOn(AndroidSchedulers.mainThread())
+       val result= movieRepository.getMovieData()
+            .subscribeOn(Schedulers.io())
+           .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 it.movieData.map {
                     list.add(MovieData(it.genre, it.id, it.poster, it.title, it.year))
-                    Log.e("DATA","-"+list.size)
+                     Log.d("DATA","-"+list.size)
                 }
             },{
-
+                Log.e("error","${it.printStackTrace()}")
+                it.printStackTrace()
             })
+        compositeDisposable.add(result)
 
-        return list
+//        return list
 
 //        val listOfMovie = movieRepository.getMovieData()
 //             .subscribeOn(Schedulers.io())
@@ -72,5 +79,8 @@ class HomeViewModel @Inject constructor(private val movieRepository: MovieReposi
 //    }
 
 
-
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.clear()
+    }
 }
