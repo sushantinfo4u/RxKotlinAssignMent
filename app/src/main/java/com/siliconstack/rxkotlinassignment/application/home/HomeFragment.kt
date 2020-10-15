@@ -18,12 +18,10 @@ import com.siliconstack.rxkotlinassignment.application.moviedetails.MovieDetails
 import com.siliconstack.rxkotlinassignment.data.api.ApiService
 import com.siliconstack.rxkotlinassignment.data.model.MovieData
 import com.siliconstack.rxkotlinassignment.data.repository.MovieRepository
-import com.siliconstack.rxkotlinassignment.di.network.NetworkModule
-import com.siliconstack.rxkotlinassignment.domain.usecase.MovieUseCase
-import io.reactivex.Scheduler
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.schedulers.Schedulers.io
-import javax.inject.Inject
 
 class HomeFragment : Fragment(), MovieAdapter.OnItemClickListener {
 
@@ -31,11 +29,6 @@ class HomeFragment : Fragment(), MovieAdapter.OnItemClickListener {
     private lateinit var viewModel: HomeViewModel
     private lateinit var adapter: MovieAdapter
     private var movieList = ArrayList<MovieData>()
-
-//    @Inject
-//    val usecase:MovieUseCase<R,R> (null,null)
-
-
     private lateinit var recyclerView: RecyclerView
 
     override fun onCreateView(
@@ -60,16 +53,51 @@ class HomeFragment : Fragment(), MovieAdapter.OnItemClickListener {
         val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
 
+        adapter = MovieAdapter(context, movieList)
+        MovieAdapter.onItemClickListener = this
+        recyclerView.adapter = adapter
+
+
+        //dispose it
+        val response = viewModel.observeRxData()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+
+                    movieList.addAll(it)
+                    adapter.notifyDataSetChanged()
+
+            },{
+                Log.e("Error",it.toString())
+            })
+
+
+
+
        // adapter = MovieAdapter(context, movieList)
 
 
 
-//        val list1 = viewModel.getData()
-//        Log.e("SIZE","--"+list1.size)
+        //val list1 =
 
-       /* adapter = MovieAdapter(context, movieList)
-        MovieAdapter.onItemClickListener = this
-        recyclerView.adapter = adapter*/
+//        val response = viewModel.getData()
+//                response.observe(viewLifecycleOwner, Observer {
+//                    Log.e("size getting","--"+it.size)
+//                })
+
+
+
+
+//        val obs = Observable.fromArray(viewModel.getData())
+//            .subscribeOn(io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe({
+//                Log.e("list size","--"+it.size)
+//            },{
+//                Log.e("error view","${it.printStackTrace()}")
+//            })
+
+
+
 
 //        val data = viewModel.getData()
 //            .subscribeOn(io())

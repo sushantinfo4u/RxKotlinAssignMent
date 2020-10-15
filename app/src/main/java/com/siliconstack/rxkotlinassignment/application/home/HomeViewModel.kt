@@ -9,6 +9,7 @@ import com.siliconstack.rxkotlinassignment.data.model.MovieData
 import com.siliconstack.rxkotlinassignment.data.model.ParentObject
 import com.siliconstack.rxkotlinassignment.data.repository.MovieRepository
 import com.siliconstack.rxkotlinassignment.domain.usecase.MovieUseCase
+import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -16,32 +17,58 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.schedulers.Schedulers.io
+import io.reactivex.subjects.BehaviorSubject
 import javax.inject.Inject
 
-class HomeViewModel @Inject constructor(private val movieRepository: MovieRepository) : ViewModel() {
+class HomeViewModel @Inject constructor(private val movieRepository: MovieRepository) :
+    ViewModel() {
 
     var listOfMovie = MutableLiveData<List<MovieData>>()
-    private val compositeDisposable=CompositeDisposable()
+    private val compositeDisposable = CompositeDisposable()
 
     init {
-        getData()
+       // getData()
+        getRxData()
     }
 
-    fun getData(){
+
+    val bs = BehaviorSubject.create<List<MovieData>>()
+
+    fun observeRxData (): Observable<List<MovieData>> = bs.observeOn(AndroidSchedulers.mainThread())
+
+    fun getRxData(){
+
+        compositeDisposable.add( movieRepository.getMovieData()
+             .observeOn(AndroidSchedulers.mainThread())
+             .subscribe({
+                 bs.onNext(it.movieData)
+             },{
+                 bs.onError(it)
+             })
+        )
+    }
+
+
+    fun getData(): LiveData<ArrayList<MovieData>> {
+
+        val data = MutableLiveData<ArrayList<MovieData>>()
+
         val list = ArrayList<MovieData>()
-       val result= movieRepository.getMovieData()
+        val result = movieRepository.getMovieData()
             .subscribeOn(Schedulers.io())
-           .observeOn(AndroidSchedulers.mainThread())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 it.movieData.map {
                     list.add(MovieData(it.genre, it.id, it.poster, it.title, it.year))
-                     Log.d("DATA","-"+list.size)
+                    Log.d("DATA", "-" + it.genre + it.id + it.poster + it.title + it.year)
                 }
-            },{
-                Log.e("error","${it.printStackTrace()}")
+            }, {
+                Log.e("error", "${it.printStackTrace()}")
                 it.printStackTrace()
             })
         compositeDisposable.add(result)
+        data.value = list
+        return data
 
 //        return list
 
@@ -59,7 +86,6 @@ class HomeViewModel @Inject constructor(private val movieRepository: MovieReposi
 //                 , {
 //                     Log.e("TAG", it.toString())
 //                 })
-
 
 
     }
