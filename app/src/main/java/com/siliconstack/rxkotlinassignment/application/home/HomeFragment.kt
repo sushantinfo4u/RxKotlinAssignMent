@@ -25,6 +25,7 @@ import io.reactivex.schedulers.Schedulers.io
 
 class HomeFragment : Fragment(), MovieAdapter.OnItemClickListener {
 
+    // This is the new thing is added in this file
 
     private lateinit var viewModel: HomeViewModel
     private lateinit var adapter: MovieAdapter
